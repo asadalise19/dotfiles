@@ -243,3 +243,4 @@ yay
 ydotool
 zenity
 zoxide
+bun

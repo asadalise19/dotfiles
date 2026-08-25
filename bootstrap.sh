@@ -111,11 +111,21 @@ if ! command -v ambxst &>/dev/null; then
 fi
 if command -v ambxst &>/dev/null && [[ -d "$DOTFILES_DIR/config/ambxst" ]]; then
     log "Restoring Ambxst settings"
-    mkdir -p "$HOME/.config/ambxst"
+    mkdir -p "$HOME/.config/ambxst" "$HOME/.local/share/ambxst" "$HOME/.local/state/ambxst"
     cp -rn "$DOTFILES_DIR/config/ambxst/." "$HOME/.config/ambxst/"
+    [[ -f "$DOTFILES_DIR/config/ambxst/axctl.toml" ]] && \
+        cp -n "$DOTFILES_DIR/config/ambxst/axctl.toml" "$HOME/.local/share/ambxst/"
+    [[ -f "$DOTFILES_DIR/config/ambxst/states.json" ]] && \
+        cp -n "$DOTFILES_DIR/config/ambxst/states.json" "$HOME/.local/state/ambxst/"
 fi
 
-# --- 4. Custom scripts -> ~/.local/bin ----------------------------------------
+# --- 4. opencode (AI CLI, runs via bun) ----------------------------------------
+if command -v bun &>/dev/null && ! command -v opencode &>/dev/null; then
+    log "Installing opencode"
+    bun install -g opencode-ai || warn "opencode install failed — run: bun install -g opencode-ai"
+fi
+
+# --- 5. Custom scripts -> ~/.local/bin ----------------------------------------
 if [[ -d "$DOTFILES_DIR/bin" ]]; then
     log "Linking custom scripts"
     mkdir -p "$HOME/.local/bin"
@@ -125,7 +135,7 @@ if [[ -d "$DOTFILES_DIR/bin" ]]; then
     done
 fi
 
-# --- 5. Configs --------------------------------------------------------------
+# --- 6. Configs --------------------------------------------------------------
 link() {
     local src="$DOTFILES_DIR/config/$1"
     local dest="$HOME/.config/$1"
@@ -148,7 +158,7 @@ for item in "$DOTFILES_DIR"/config/*; do
     link "$(basename "$item")"
 done
 
-# --- 6. Permissions ----------------------------------------------------------
+# --- 7. Permissions ----------------------------------------------------------
 find "$DOTFILES_DIR/config" -name '*.sh' -exec chmod +x {} \;
 
 log "Done. Log out and back in (or reboot) to apply everything."

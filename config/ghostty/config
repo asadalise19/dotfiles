@@ -1,0 +1,46 @@
+# Migrated from Alacritty.
+command = /usr/bin/fish
+shell-integration = fish
+
+font-family = JetBrainsMono Nerd Font
+font-size = 13
+
+background = #091417
+foreground = #c9d4d6
+background-opacity = 0.86
+background-opacity-cells = true
+minimum-contrast = 3
+
+window-padding-x = 14
+window-padding-y = 12
+window-padding-balance = true
+window-padding-color = background
+
+scrollback-limit = 10000
+cursor-style = block
+cursor-style-blink = true
+cursor-color = #73b9b8
+cursor-text = #091417
+
+selection-foreground = #e2eaeb
+selection-background = #29474c
+palette = 0=#17262a
+palette = 1=#c66f6b
+palette = 2=#79a77d
+palette = 3=#c99b59
+palette = 4=#6e94be
+palette = 5=#a47fa5
+palette = 6=#5ca5a5
+palette = 7=#b4c1c4
+palette = 8=#607277
+palette = 9=#dc8982
+palette = 10=#94c097
+palette = 11=#ddb472
+palette = 12=#88adda
+palette = 13=#be9bbe
+palette = 14=#7ac5c4
+palette = 15=#e3eaeb
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+mouse-hide-while-typing = true

@@ -32,11 +32,11 @@ Then reboot. That's it — login via SDDM into Hyprland.
 
 | Component | What |
 |---|---|
-| 236 pacman + 10 AUR packages | Full package list from `packages.txt` / `aur-packages.txt` |
+| 237 pacman + 10 AUR packages | Full package list from `packages.txt` / `aur-packages.txt` |
 | [Ambxst](https://github.com/Axenide/Ambxst) | Desktop shell — bar, dock, notch, launcher, overview |
 | [vicinae](https://github.com/vicinaehq/vicinae) | Raycast-style launcher (`SUPER+Space`), clipboard history (`SUPER+V`) |
 | hyprlock | Lockscreen with wallpaper + avatar |
-| fish · ghostty · kitty | Shell + terminals |
+| fish · ghostty · kitty | Shell + terminals (ghostty themed) |
 | cava | Audio visualizer shaders/themes |
 | Custom scripts | numlock enforcement, ydotoold wrapper → `~/.local/bin` |
 
@@ -67,6 +67,7 @@ dotfiles/
     ├── ambxst/         desktop shell settings (bar, dock, theme, binds)
     ├── hypr/           hyprland + hyprlock + scripts
     ├── eww/            widgets
+    ├── ghostty/         terminal config (theme, font)
     ├── fish/           shell config
     └── cava/           visualizer
 ```
