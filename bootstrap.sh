@@ -94,7 +94,15 @@ if [[ -f "$DOTFILES_DIR/aur-packages.txt" ]]; then
     fi
 fi
 
-# --- 2. Configs --------------------------------------------------------------
+# --- 2. Assets (lockscreen wallpaper + avatars) ------------------------------
+if [[ -d "$DOTFILES_DIR/assets" ]]; then
+    log "Installing assets"
+    mkdir -p "$HOME/Pictures/wallpapers"
+    cp -n "$DOTFILES_DIR/assets/lockscreen.png" "$HOME/Pictures/wallpapers/" 2>/dev/null || true
+    cp -n "$DOTFILES_DIR/assets/"avatar*.png "$HOME/Pictures/" 2>/dev/null || true
+fi
+
+# --- 3. Configs --------------------------------------------------------------
 link() {
     local src="$DOTFILES_DIR/config/$1"
     local dest="$HOME/.config/$1"
@@ -117,7 +125,7 @@ for item in "$DOTFILES_DIR"/config/*; do
     link "$(basename "$item")"
 done
 
-# --- 3. Permissions ----------------------------------------------------------
+# --- 4. Permissions ----------------------------------------------------------
 find "$DOTFILES_DIR/config" -name '*.sh' -exec chmod +x {} \;
 
 log "Done. Log out and back in (or reboot) to apply everything."
