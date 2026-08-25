@@ -9,9 +9,44 @@ BACKUP_DIR="$HOME/.config/backup-$(date +%Y%m%d-%H%M%S)"
 
 log()  { printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m ->\033[0m %s\n' "$*"; }
+err()  { printf '\033[1;31m !!\033[0m %s\n' "$*"; }
 
 SUDO=""
 [[ ${EUID:-$(id -u)} -ne 0 ]] && SUDO="sudo"
+
+# --- 0. Preflight ------------------------------------------------------------
+avail_gb=$(df --output=avail -BG / | tail -1 | tr -dc '0-9')
+if ((avail_gb < 10)); then
+    warn "only ${avail_gb}GB free on / — full install needs ~10GB"
+fi
+
+# stale pacman lock (crashed install) — remove it; live lock — wait for it
+if [[ -e /var/lib/pacman/db.lck ]]; then
+    if pgrep -x pacman &>/dev/null; then
+        log "another pacman is running — waiting for it to finish"
+        while pgrep -x pacman &>/dev/null; do sleep 5; done
+    else
+        warn "removing stale pacman lock"
+        $SUDO rm -f /var/lib/pacman/db.lck
+    fi
+fi
+
+# refresh keyrings first — prevents most PGP/"unknown trust" errors on old ISOs
+log "Refreshing keyrings"
+$SUDO pacman -Sy --noconfirm --needed archlinux-keyring &>/dev/null \
+    || warn "archlinux-keyring refresh failed (continuing)"
+$SUDO pacman -Sy --noconfirm --needed cachyos-keyring &>/dev/null || true
+
+# --- retry helper: mirrors flake, dbs go stale — retry with refresh ----------
+retry_pacman() {
+    local attempt
+    for attempt in 1 2 3; do
+        if "$@"; then return 0; fi
+        warn "attempt $attempt/3 failed — refreshing databases, retrying"
+        $SUDO pacman -Syy --noconfirm &>/dev/null || true
+    done
+    return 1
+}
 
 # --- 1. Packages -------------------------------------------------------------
 if [[ -f "$DOTFILES_DIR/packages.txt" ]]; then
@@ -33,20 +68,30 @@ if [[ -f "$DOTFILES_DIR/packages.txt" ]]; then
 
     if ((${#available[@]})); then
         log "Installing ${#available[@]} pacman packages"
-        $SUDO pacman -S --needed --noconfirm - <<< "$(printf '%s\n' "${available[@]}")"
+        if ! retry_pacman $SUDO pacman -S --needed --noconfirm - <<< "$(printf '%s\n' "${available[@]}")"; then
+            err "pacman install failed after 3 attempts — fix manually, then re-run:"
+            err "  $SUDO pacman -S --needed - < packages.txt"
+        fi
     fi
     if ((${#missing[@]})); then
         warn "not found in repos (${#missing[@]}): ${missing[*]}"
     fi
 fi
 
-if [[ -f "$DOTFILES_DIR/aur-packages.txt" ]] && command -v yay &>/dev/null; then
-    log "Installing AUR packages ($(wc -l < "$DOTFILES_DIR/aur-packages.txt") pkgs)"
-    if ! yay -S --needed --noconfirm - < "$DOTFILES_DIR/aur-packages.txt"; then
-        warn "AUR install failed — continuing with configs (re-run later: yay -S --needed - < aur-packages.txt)"
+if [[ -f "$DOTFILES_DIR/aur-packages.txt" ]]; then
+    # yay missing? it's in official repos — auto-install it
+    if ! command -v yay &>/dev/null; then
+        log "Installing yay (AUR helper)"
+        retry_pacman $SUDO pacman -S --needed --noconfirm yay || warn "could not install yay"
     fi
-elif [[ -f "$DOTFILES_DIR/aur-packages.txt" ]]; then
-    warn "yay not found — install it first: sudo pacman -S yay"
+    if command -v yay &>/dev/null; then
+        log "Installing AUR packages ($(wc -l < "$DOTFILES_DIR/aur-packages.txt") pkgs)"
+        if ! yay -S --needed --noconfirm - < "$DOTFILES_DIR/aur-packages.txt"; then
+            warn "AUR install failed — continuing (re-run later: yay -S --needed - < aur-packages.txt)"
+        fi
+    else
+        warn "skipping AUR packages — install yay and re-run"
+    fi
 fi
 
 # --- 2. Configs --------------------------------------------------------------
