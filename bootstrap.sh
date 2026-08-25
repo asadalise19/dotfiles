@@ -42,7 +42,9 @@ fi
 
 if [[ -f "$DOTFILES_DIR/aur-packages.txt" ]] && command -v yay &>/dev/null; then
     log "Installing AUR packages ($(wc -l < "$DOTFILES_DIR/aur-packages.txt") pkgs)"
-    yay -S --needed --noconfirm - < "$DOTFILES_DIR/aur-packages.txt"
+    if ! yay -S --needed --noconfirm - < "$DOTFILES_DIR/aur-packages.txt"; then
+        warn "AUR install failed — continuing with configs (re-run later: yay -S --needed - < aur-packages.txt)"
+    fi
 elif [[ -f "$DOTFILES_DIR/aur-packages.txt" ]]; then
     warn "yay not found — install it first: sudo pacman -S yay"
 fi
