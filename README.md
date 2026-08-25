@@ -14,7 +14,7 @@
 
 ![Lockscreen](assets/lockscreen.png)
 
-*hyprlock — macOS-style glass lockscreen*
+*hyprlock — aesthetic lockscreen*
 
 ![CachyOS](https://img.shields.io/badge/CachyOS-rolling-3893d1?logo=linux&logoColor=white)
 ![Hyprland](https://img.shields.io/badge/Hyprland-wayland-00a1a8)
