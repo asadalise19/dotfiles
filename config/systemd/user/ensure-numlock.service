@@ -1,0 +1,6 @@
+[Unit]
+Description=Ensure NumLock is always on
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/ensure-numlock

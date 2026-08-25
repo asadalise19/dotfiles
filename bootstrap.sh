@@ -94,12 +94,13 @@ if [[ -f "$DOTFILES_DIR/aur-packages.txt" ]]; then
     fi
 fi
 
-# --- 2. Assets (lockscreen wallpaper + avatars) ------------------------------
+# --- 2. Assets (wallpapers, lockscreen, avatars) ------------------------------
 if [[ -d "$DOTFILES_DIR/assets" ]]; then
     log "Installing assets"
     mkdir -p "$HOME/Pictures/wallpapers"
     cp -n "$DOTFILES_DIR/assets/lockscreen.png" "$HOME/Pictures/wallpapers/" 2>/dev/null || true
     cp -n "$DOTFILES_DIR/assets/"avatar*.png "$HOME/Pictures/" 2>/dev/null || true
+    cp -n "$DOTFILES_DIR/assets/wallpapers/"* "$HOME/Pictures/wallpapers/" 2>/dev/null || true
 fi
 
 # --- 3. Ambxst (desktop shell: bar, dock, launcher) ---------------------------
@@ -135,6 +136,20 @@ if [[ -d "$DOTFILES_DIR/bin" ]]; then
     done
 fi
 
+# custom app launchers -> ~/.local/share/applications
+if [[ -d "$DOTFILES_DIR/applications" ]]; then
+    log "Installing app launchers"
+    mkdir -p "$HOME/.local/share/applications"
+    cp -n "$DOTFILES_DIR/applications/"*.desktop "$HOME/.local/share/applications/" 2>/dev/null || true
+fi
+
+# icon theme -> ~/.local/share/icons
+if [[ -d "$DOTFILES_DIR/config/icons" ]]; then
+    log "Linking icons"
+    mkdir -p "$HOME/.local/share"
+    ln -sfn "$DOTFILES_DIR/config/icons" "$HOME/.local/share/icons"
+fi
+
 # --- 6. Configs --------------------------------------------------------------
 link() {
     local src="$DOTFILES_DIR/config/$1"
@@ -160,5 +175,10 @@ done
 
 # --- 7. Permissions ----------------------------------------------------------
 find "$DOTFILES_DIR/config" -name '*.sh' -exec chmod +x {} \;
+
+# reload user services (systemd units are part of the tracked configs)
+if command -v systemctl &>/dev/null && systemctl --user &>/dev/null; then
+    systemctl --user daemon-reload || true
+fi
 
 log "Done. Log out and back in (or reboot) to apply everything."

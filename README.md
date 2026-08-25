@@ -4,7 +4,7 @@
 
 **CachyOS · Hyprland · Ambxst** — my full Linux rice, restorable with one command.
 
-![Desktop](assets/screenshot.png)
+<img src="https://github.com/asadalise19/dotfiles/raw/main/assets/screenshot.png" alt="Desktop"/>
 
 *Hyprland + Ambxst bar/dock + ghostty + opencode*
 

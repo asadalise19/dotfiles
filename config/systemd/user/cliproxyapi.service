@@ -1,0 +1,14 @@
+[Unit]
+Description=CLIProxyAPI Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/asad/cliproxyapi
+ExecStart=/home/asad/cliproxyapi/cli-proxy-api
+Restart=always
+RestartSec=10
+Environment=HOME=/home/asad
+
+[Install]
+WantedBy=default.target

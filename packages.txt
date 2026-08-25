@@ -244,3 +244,4 @@ ydotool
 zenity
 zoxide
 bun
+nvim
