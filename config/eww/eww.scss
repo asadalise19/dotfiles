@@ -1,0 +1,27 @@
+* {
+	font-family: "Noto Sans", sans-serif;
+}
+
+window {
+	background: transparent;
+}
+
+.date {
+	font-family: "Audiowide", sans-serif;
+	font-size: 30px;
+	font-weight: 500;
+	color: white;
+  margin-top: 15px;
+	margin-bottom: 0px;
+	letter-spacing: 1px;
+}
+
+.time {
+	font-family: "Roboto", sans-serif;
+	font-size: 90px;
+	font-weight: 700;
+	color: white;
+}
+.date, .time {
+	margin-bottom: 10px;
+}

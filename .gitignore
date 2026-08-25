@@ -1,0 +1,5 @@
+.config/
+backup-*/
+*.save
+fish_variables
+__pycache__/

@@ -1,0 +1,10 @@
+(deflisten date "bash -c \"date '+%A, %B %d'\"")
+(deflisten time "bash -c \"while true; do date '+%I:%M'; sleep 1; done\"")
+
+(defwindow clock
+  :stacking "bg"
+  :monitor 0
+  :geometry (geometry :x "0" :y "90" :width "600" :height "250" :anchor "top center")
+  (box :orientation "vertical" :halign "center" :valign "center" :space-evenly false
+    (label :class "date" :text date)
+    (label :class "time" :text time)))

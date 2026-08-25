@@ -1,0 +1,9 @@
+audiowide-font
+google-chrome
+gradia
+libfprint-2-tod1-goodix-v2
+libfprint-tod
+python312
+ttf-league-gothic
+ttf-michroma
+ttf-phosphor-icons
