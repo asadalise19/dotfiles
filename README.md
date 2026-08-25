@@ -6,7 +6,11 @@
 
 <img src="https://github.com/asadalise19/dotfiles/raw/main/assets/screenshot.png" alt="Desktop"/>
 
-*Hyprland + Ambxst bar/dock + ghostty + opencode*
+*Hyprland + Ambxst bar/dock + torii wallpaper*
+
+<img src="https://github.com/asadalise19/dotfiles/raw/main/assets/terminal.png" alt="Terminal"/>
+
+*ghostty + fish prompt + tmux sessions*
 
 ![Lockscreen](assets/lockscreen.png)
 
