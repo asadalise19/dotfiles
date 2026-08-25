@@ -1,0 +1,19 @@
+#!/bin/bash
+state=$(hyprctl -j devices 2>/dev/null | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+main_kb = None
+for kb in d.get('keyboards', []):
+    if kb.get('main'):
+        main_kb = kb
+        break
+if not main_kb and d.get('keyboards'):
+    main_kb = d['keyboards'][0]
+if main_kb:
+    print('on' if main_kb.get('numLock') else 'off')
+else:
+    print('unknown')
+")
+if [ "$state" = "off" ]; then
+    ydotool key 69
+fi

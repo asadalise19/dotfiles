@@ -7,3 +7,4 @@ python312
 ttf-league-gothic
 ttf-michroma
 ttf-phosphor-icons
+vicinae-bin

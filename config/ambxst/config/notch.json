@@ -1,0 +1,9 @@
+{
+  "theme": "island",
+  "position": "top",
+  "hoverRegionHeight": 2,
+  "keepHidden": true,
+  "noMediaDisplay": "userHost",
+  "customText": "Ambxst",
+  "disableHoverExpansion": true
+}

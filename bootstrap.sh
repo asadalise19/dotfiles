@@ -102,7 +102,30 @@ if [[ -d "$DOTFILES_DIR/assets" ]]; then
     cp -n "$DOTFILES_DIR/assets/"avatar*.png "$HOME/Pictures/" 2>/dev/null || true
 fi
 
-# --- 3. Configs --------------------------------------------------------------
+# --- 3. Ambxst (desktop shell: bar, dock, launcher) ---------------------------
+if ! command -v ambxst &>/dev/null; then
+    log "Installing Ambxst"
+    git clone --depth 1 https://github.com/Axenide/Ambxst.git /tmp/ambxst \
+        && (cd /tmp/ambxst && ./install.sh) \
+        || warn "Ambxst install failed — install manually from github.com/Axenide/Ambxst"
+fi
+if command -v ambxst &>/dev/null && [[ -d "$DOTFILES_DIR/config/ambxst" ]]; then
+    log "Restoring Ambxst settings"
+    mkdir -p "$HOME/.config/ambxst"
+    cp -rn "$DOTFILES_DIR/config/ambxst/." "$HOME/.config/ambxst/"
+fi
+
+# --- 4. Custom scripts -> ~/.local/bin ----------------------------------------
+if [[ -d "$DOTFILES_DIR/bin" ]]; then
+    log "Linking custom scripts"
+    mkdir -p "$HOME/.local/bin"
+    for script in "$DOTFILES_DIR"/bin/*; do
+        chmod +x "$script" 2>/dev/null
+        ln -sf "$script" "$HOME/.local/bin/$(basename "$script")"
+    done
+fi
+
+# --- 5. Configs --------------------------------------------------------------
 link() {
     local src="$DOTFILES_DIR/config/$1"
     local dest="$HOME/.config/$1"
@@ -125,7 +148,7 @@ for item in "$DOTFILES_DIR"/config/*; do
     link "$(basename "$item")"
 done
 
-# --- 4. Permissions ----------------------------------------------------------
+# --- 6. Permissions ----------------------------------------------------------
 find "$DOTFILES_DIR/config" -name '*.sh' -exec chmod +x {} \;
 
 log "Done. Log out and back in (or reboot) to apply everything."
