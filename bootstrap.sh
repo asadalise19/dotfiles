@@ -37,6 +37,30 @@ $SUDO pacman -Sy --noconfirm --needed archlinux-keyring &>/dev/null \
     || warn "archlinux-keyring refresh failed (continuing)"
 $SUDO pacman -Sy --noconfirm --needed cachyos-keyring &>/dev/null || true
 
+# add CachyOS repos if missing (needed on plain Arch, harmless on CachyOS)
+if ! grep -q '^\[cachyos' /etc/pacman.conf 2>/dev/null; then
+    log "Adding CachyOS repos"
+    cat >> /etc/pacman.conf <<'CACHYOS_REPOS'
+
+[cachyos-v3]
+SigLevel = Optional TrustAll
+Server = https://cdn.cachyos.org/repo/x86_64_v3/$repo
+
+[cachyos-extra-v3]
+SigLevel = Optional TrustAll
+Server = https://cdn.cachyos.org/repo/x86_64_v3/$repo
+
+[cachyos-core-v3]
+SigLevel = Optional TrustAll
+Server = https://cdn.cachyos.org/repo/x86_64_v3/$repo
+
+[cachyos]
+SigLevel = Optional TrustAll
+Server = https://cdn.cachyos.org/repo/x86_64/$repo
+CACHYOS_REPOS
+    $SUDO pacman -Syy --noconfirm &>/dev/null || true
+fi
+
 # --- retry helper: mirrors flake, dbs go stale — retry with refresh ----------
 retry_pacman() {
     local attempt
